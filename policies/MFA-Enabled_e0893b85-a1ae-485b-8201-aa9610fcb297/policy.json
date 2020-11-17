@@ -1,0 +1,66 @@
+{
+ "properties": {
+  "displayName": "MFA-Enabled",
+  "policyType": "Custom",
+  "mode": "All",
+  "metadata": {
+   "version": "2.0.0",
+   "createdBy": "7bf2eba4-4565-4332-9523-5e37865b598a",
+   "createdOn": "2020-11-17T14:30:52.728279Z",
+   "updatedBy": null,
+   "updatedOn": null
+  },
+  "parameters": {
+   "effect": {
+    "type": "String",
+    "metadata": {
+     "displayName": "Effect",
+     "description": "Enable or disable the execution of the policy"
+    },
+    "allowedValues": [
+     "AuditIfNotExists",
+     "Disabled"
+    ],
+    "defaultValue": "AuditIfNotExists"
+   },
+   "allowedgroups": {
+    "type": "Array",
+    "metadata": {
+     "displayName": "BreakGlassGroup",
+     "description": "Break glass groups to be excluded from MFA"
+    },
+    "defaultValue": []
+   }
+  },
+  "policyRule": {
+   "if": {
+    "allOf": [
+     {
+      "field": "type",
+      "equals": "Microsoft.Resources/subscriptions"
+     },
+     {
+      "field": "Microsoft.ApiManagement/service/groups/displayName",
+      "notIn": "[parameters('allowedgroups')]"
+     }
+    ]
+   },
+   "then": {
+    "effect": "[parameters('effect')]",
+    "details": {
+     "type": "Microsoft.Security/assessments",
+     "name": "94290b00-4d0c-d7b4-7cea-064a9554e681",
+     "existenceCondition": {
+      "field": "Microsoft.Security/assessments/status.code",
+      "in": [
+       "Healthy"
+      ]
+     }
+    }
+   }
+  }
+ },
+ "id": "/subscriptions/9cbd346e-f4f9-4b10-b292-0d3058a73663/providers/Microsoft.Authorization/policyDefinitions/e0893b85-a1ae-485b-8201-aa9610fcb297",
+ "type": "Microsoft.Authorization/policyDefinitions",
+ "name": "e0893b85-a1ae-485b-8201-aa9610fcb297"
+}
